@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Login ChibchaWeb</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->
+<link rel="icon" type="image/png" href="images/icons/favicon.ico" />
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css" href="static/css/utilLogin.css" th:href="@{/css/utilLogin.css}">
+<link rel="stylesheet" type="text/css" href="static/css/mainLogin.css" th:href="@{/css/mainLogin.css}">
+<!--===============================================================================================-->
+<link href="https://fonts.googleapis.com/css?family=Poppins:400,700&display=swap" rel="stylesheet">
+
+</head>
+<body>
+
+	<div class="limiter">
+		<div class="container-login100">
+			<div class="wrap-login100">
+				<div class="login100-form-title"
+					style="background-image: url(/img/bg-01.jpg);">
+					<span class="login100-form-title-1"> ChibchaWeb Ingreso </span>
+				</div>
+
+				<form class="login100-form validate-form" th:action="@{/login}"
+					method="post">
+					<div class="wrap-input100 validate-input m-b-26"
+						data-validate="Username is required">
+						<span class="label-input100">Correo</span> <input class="input100"
+							type="text" name="username" placeholder="Ingrese su correo">
+						<span class="focus-input100"></span>
+					</div>
+
+					<div class="wrap-input100 validate-input m-b-18"
+						data-validate="Password is required">
+						<span class="label-input100">Contrase&ntilde;a</span> <input
+							class="input100" type="password" name="password"
+							placeholder="Ingrese la contrase&ntilde;a"> <span
+							class="focus-input100"></span>
+					</div>
+
+					<div class="flex-sb-m w-full p-b-30">
+						<div>
+							<a href="#" class="txt1"> ¿Ha olvidado su contrase&ntilde;a?
+							</a>
+						</div>
+					</div>
+
+					<div class="container-login100-form-btn">
+						<button type="submit" class="login100-form-btn">Ingresar
+						</button>
+					</div>
+
+					<div th:if="${param.error}" class="alert alert-danger" role="alert">
+						Contrase&ntilde;a invalida</div>
+					<div th:if="${param.logout}" class="alert alert-success"
+						role="alert">Ha cerrado sesi&oacute;n.</div>
+
+				</form>
+			</div>
+		</div>
+	</div>
+
+
+</body>
+</html>
