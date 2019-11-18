@@ -4,7 +4,7 @@ import org.springframework.data.repository.CrudRepository;
 
 import com.chibcha.plus.entity.Empleado_soporte;;
 
-public interface EmpSoporteRepository extends CrudRepository<Empleado_soporte, Long>  
+public interface Empleado_soporteRepository extends CrudRepository<Empleado_soporte, Long>  
 {
 
 }

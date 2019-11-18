@@ -30,7 +30,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 		.authorizeRequests()
 		.antMatchers(resources).permitAll()  
 //		.antMatchers("/","/index").permitAll()
-		.antMatchers("/","/login", "/chibcha").permitAll()
+		.antMatchers("/","/login", "/chibcha", "/carousel").permitAll()
 		.antMatchers("/admin*","/admin_distribuidores", "/admin_clientes", "admin_empleados").access("hasRole('ADMIN')")
 		.antMatchers("/user*").access("hasRole('USER')")
 		.antMatchers("/comision*").access("hasRole('COMISIONES')")
@@ -49,6 +49,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 		.logout()
 		.permitAll()
 		.logoutSuccessUrl("/login?logout");
+		
+		http.headers().frameOptions().sameOrigin();
 	}
 	BCryptPasswordEncoder bCryptPasswordEncoder;
 	//Crea el encriptador de contraseñas	

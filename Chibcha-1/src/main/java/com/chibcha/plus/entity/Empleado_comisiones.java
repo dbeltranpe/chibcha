@@ -10,12 +10,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
 @Entity
-public class Empleado_comisiones 
+public class Empleado_comisiones
 {
+	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name="id_emp_comisiones")
-	private int id;
+	private Long id;
 	
 	@Column(name="nom_emp_comisiones")
 	private String nombre;
@@ -33,11 +34,11 @@ public class Empleado_comisiones
 		usuario.setEnabled(true);
 	}
 
-	public int getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

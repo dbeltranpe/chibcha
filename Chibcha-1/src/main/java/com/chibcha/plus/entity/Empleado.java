@@ -1,39 +1,31 @@
 package com.chibcha.plus.entity;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
-@Entity
-public class Empleado_soporte
+public class Empleado 
 {
-	
-	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name="id_emp_soporte")
 	private Long id;
 	
-	@Column(name="nom_emp_soporte")
+	@NotEmpty(message="Se debe indicar el nombre del empleado")
 	private String nombre;
 	
-	@Column(name="sueldo_emp_soporte")
+	@NotNull(message="Se debe indicar el sueldo del empleado")
 	private int sueldo;
 	
-	@JoinColumn(name="usuario_id",unique=true)
-	@OneToOne(cascade = CascadeType.ALL)
+	@Valid
 	private Usuario usuario;
 	
-	public Empleado_soporte()
+	public Empleado()
 	{
 		usuario = new Usuario();
 		usuario.setEnabled(true);
 	}
-
+	
 	public Long getId() {
 		return id;
 	}
