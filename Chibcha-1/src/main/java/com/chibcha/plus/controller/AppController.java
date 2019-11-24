@@ -1,5 +1,6 @@
 package com.chibcha.plus.controller;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +25,12 @@ import com.chibcha.plus.entity.Empleado;
 import com.chibcha.plus.entity.Empleado_comisiones;
 import com.chibcha.plus.entity.Empleado_soporte;
 import com.chibcha.plus.entity.Usuario;
+import com.chibcha.plus.entity.views.VENTAS_DISTRIBUIDOR_ANUAL;
+import com.chibcha.plus.entity.views.VENTAS_DISTRIBUIDOR_ANUAL_REPOSITORY;
+import com.chibcha.plus.entity.views.VENTAS_DISTRIBUIDOR_MENSUAL;
+import com.chibcha.plus.entity.views.VENTAS_DISTRIBUIDOR_MENSUAL_REPOSITORY;
+import com.chibcha.plus.entity.views.VENTAS_DISTRIBUIDOR_SEMESTRAL;
+import com.chibcha.plus.entity.views.VENTAS_DISTRIBUIDOR_SEMESTRAL_REPOSITORY;
 import com.chibcha.plus.repository.AuthorityRepository;
 import com.chibcha.plus.repository.UsuarioRepository;
 import com.chibcha.plus.service.api.ClienteServiceAPI;
@@ -34,6 +41,7 @@ import com.chibcha.plus.service.api.Empleado_soporteServiceAPI;
 @Controller
 public class AppController 
 {
+	
 	@Autowired
 	private DistribuidorServiceAPI distribuidorServiceAPI;
 	
@@ -50,7 +58,17 @@ public class AppController
 	private AuthorityRepository authorityRepository;
 	
 	@Autowired
-	UsuarioRepository userRepository;
+	private UsuarioRepository userRepository;
+	
+	@Autowired
+	private VENTAS_DISTRIBUIDOR_ANUAL_REPOSITORY ventasAnualRepository;
+	
+	@Autowired
+	private VENTAS_DISTRIBUIDOR_MENSUAL_REPOSITORY ventasMensualRepository;
+	
+	@Autowired
+	private VENTAS_DISTRIBUIDOR_SEMESTRAL_REPOSITORY ventasSemestralRepository;
+	
 	
 	private Passgenerator pass = new Passgenerator();
 	
@@ -88,8 +106,9 @@ public class AppController
 	}
 	
 	@GetMapping({"/comision"})
-	public String comision() 
+	public String comision(Model model) 
 	{
+		model.addAttribute("distribuidoresList", distribuidorServiceAPI.listar());
 		return "comision";
 	}
 	
@@ -387,6 +406,68 @@ public class AppController
 		
 		return "admin_empleados";
 	}
+	
+	@GetMapping({"/comision_reporte"})
+	public String comision_reporte(Model model) 
+	{
+		return "comision_reporte";
+	}
+	
+	@GetMapping({"/comision_anual/{id}/{nombre}"})
+	public String comision_anual(Model model, @PathVariable(name="nombre") String nombre, @PathVariable(name="id") Long id)
+	{		
+		List<VENTAS_DISTRIBUIDOR_ANUAL> list = new ArrayList<>();
+		ventasAnualRepository.findAllByNombre(nombre).forEach(obj -> list.add(obj));
+		model.addAttribute("ventasLista", list);
+		
+		int[] total = new int[1];
+		list.forEach(obj -> total[0]+=obj.getValor());
+		model.addAttribute("total", total);
+		
+		Distribuidor distribuidor = distribuidorServiceAPI.obtener(id);
+		model.addAttribute("distribuidor", distribuidor);
+		
+		
+		return "comision_reporte";
+	}
+	
+	@GetMapping({"/comision_mensual/{id}/{nombre}"})
+	public String comision_mensual(Model model, @PathVariable(name="nombre") String nombre, @PathVariable(name="id") Long id)
+	{		
+		List<VENTAS_DISTRIBUIDOR_MENSUAL> list = new ArrayList<>();
+		ventasMensualRepository.findAllByNombre(nombre).forEach(obj -> list.add(obj));
+		model.addAttribute("ventasLista", list);
+		
+		int[] total = new int[1];
+		list.forEach(obj -> total[0]+=obj.getValor());
+		model.addAttribute("total", total);
+		
+		Distribuidor distribuidor = distribuidorServiceAPI.obtener(id);
+		model.addAttribute("distribuidor", distribuidor);
+		
+		
+		return "comision_reporte";
+	}
+	
+	@GetMapping({"/comision_semestral/{id}/{nombre}"})
+	public String comision_semestral(Model model, @PathVariable(name="nombre") String nombre, @PathVariable(name="id") Long id)
+	{		
+		List<VENTAS_DISTRIBUIDOR_SEMESTRAL> list = new ArrayList<>();
+		ventasSemestralRepository.findAllByNombre(nombre).forEach(obj -> list.add(obj));
+		model.addAttribute("ventasLista", list);
+		
+		int[] total = new int[1];
+		list.forEach(obj -> total[0]+=obj.getValor());
+		model.addAttribute("total", total);
+		
+		Distribuidor distribuidor = distribuidorServiceAPI.obtener(id);
+		model.addAttribute("distribuidor", distribuidor);
+		
+		
+		return "comision_reporte";
+	}
+	
+	
 	
 	
 	

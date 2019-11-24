@@ -33,7 +33,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 		.antMatchers("/","/login", "/chibcha", "/carousel").permitAll()
 		.antMatchers("/admin*","/admin_distribuidores", "/admin_clientes", "admin_empleados").access("hasRole('ADMIN')")
 		.antMatchers("/user*").access("hasRole('USER')")
-		.antMatchers("/comision*").access("hasRole('COMISIONES')")
+		.antMatchers("/comision*", "/comision_reporte").access("hasRole('COMISIONES')")
 		.antMatchers("/soporte*").access("hasRole('SOPORTE')")
 		.anyRequest().authenticated()
 		.and()
