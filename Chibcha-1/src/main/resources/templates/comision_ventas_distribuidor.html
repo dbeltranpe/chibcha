@@ -47,11 +47,12 @@
 			</div>
 			<div class="sidebar-wrapper">
 				<ul class="nav">
-					<li class="active "><a th:href="@{/comision}"> <i
+					<li><a th:href="@{/comision}"> <i
 							class="nc-icon nc-bookmark-2"></i>
 							<p>Comisiones</p>
 					</a></li>
-					<li><a th:href="@{/comision_ventas_distribuidor}"> <i
+					<li class="active"><a
+						th:href="@{/comision_ventas_distribuidor}"> <i
 							class="nc-icon nc-badge"></i>
 							<p>Ventas Distribuidores</p>
 					</a></li>
@@ -131,47 +132,129 @@
 					<div class="col-md-12">
 						<div class="card ">
 							<div class="card-header ">
-								<h5 class="card-title">Consultar Distribuidores</h5>
+								<h5 class="card-title">Generar Comisi&oacute;n</h5>
 							</div>
 
 							<div class="card-body ">
-								<div>
-									<div>
-										<table id="example" class="display" style="text-align: center">
-											<thead>
-												<tr>
-													<td><b>Nombre</b></td>
-													<td><b>Correo</b></td>
-													<td><b>Calcular Comisi&oacute;n</b></td>
-												</tr>
-											</thead>
 
-											<tbody>
-												<tr th:each="distribuidor: ${distribuidoresList}">
-													<td th:text=${distribuidor.nombre}></td>
-													<td th:text=${distribuidor.correo}></td>
-													<td><a
-														th:href="@{'/comision_mensual/'  + ${distribuidor.id} + '/' + ${distribuidor.nombre} }">Mensual</a>
-														<br> <a
-														th:href="@{'/comision_semestral/'  + ${distribuidor.id} + '/' + ${distribuidor.nombre} }">Semestral</a>
-														<br> <a
-														th:href="@{'/comision_anual/' + ${distribuidor.id} + '/' + ${distribuidor.nombre} }">Anual</a>
-													</td>
-												</tr>
-											</tbody>
+								<form th:action="@{/crear_venta_distribuidor}"
+									th:object="${ventaDistribuidor}" method="post">
 
-										</table>
+									<input type="hidden" th:field="${ventaDistribuidor.idVenta}" />
 
+									<div class="row">
+										<div class="col-md-12">
+											<div class="form-group">
+												<label>Valor</label> <input type="number"
+													class="form-control" placeholder="Valor"
+													th:field="${ventaDistribuidor.valor}"> <small
+													class="form-text text-danger"
+													th:if="${#fields.hasErrors('valor')}" th:errors="*{valor}"></small>
+											</div>
+										</div>
 									</div>
-								</div>
+
+									<div class="row">
+										<div class="col-md-12">
+											<div class="form-group">
+												<label>Descripci&oacute;n</label> <input type="text"
+													class="form-control" placeholder="Descripción"
+													th:field="${ventaDistribuidor.descripcion}"> <small
+													class="form-text text-danger"
+													th:if="${#fields.hasErrors('descripcion')}"
+													th:errors="*{decsripcion}"></small>
+											</div>
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="col-md-6 pr-1">
+											<div class="form-group">
+
+												<label>Distribuidor Asociado</label> <select
+													class="form-control" th:size="1"
+													th:field="${ventaDistribuidor.distribuidor}">
+													<option th:each="distribuidor : ${distribuidoresList}"
+														th:value="${distribuidor.id}"
+														th:text="${distribuidor.nombre}"></option>
+												</select>
+
+											</div>
+										</div>
+										<div class="col-md-6 pl-1">
+											<div class="form-group">
+												<label>Fecha de la Comisión</label> <input type="date"
+													class="form-control" placeholder="Fecha de la Comisión"
+													th:field="${ventaDistribuidor.fecha}"> <small
+													class="form-text text-danger"
+													th:if="${#fields.hasErrors('fecha')}" th:errors="*{fecha}"></small>
+
+											</div>
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="col-md-12 pr-1">
+											<input class="btn btn-primary btn-round" type="submit"
+												value="Generar" />
+										</div>
+									</div>
+
+								</form>
+
 
 							</div>
 
 							<div class="card-footer ">
 								<hr>
 								<div class="stats">
-									<i class="fa fa-calendar"></i> Informaci&oacute;n Actualizada
-									Automáticamente
+									<!-- <i class="fa fa-calendar"></i> Informaci&oacute;n Actualizada
+									Automáticamente  -->
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+				<div class="row">
+					<div class="col-md-12">
+						<div class="card ">
+							<div class="card-header ">
+								<h5 class="card-title">Consultar Comisiones</h5>
+							</div>
+
+							<div class="card-body ">
+						
+										<table id="example" class="display" style="text-align: center">
+
+											<thead>
+												<tr>
+													<td><b>Distribuidor Asociado</b></td>
+													<td><b>Valor Comisi&oacute;n</b></td>
+													<td><b>Descripci&oacute;n</b></td>
+													<td><b>Fecha</b></td>
+												</tr>
+											</thead>
+
+											<tbody>
+												<tr th:each="venta: ${ventaList}">
+													<td th:text=${venta.distribuidor.nombre}></td>
+													<td th:text=${venta.valor}></td>
+													<td th:text=${venta.descripcion}></td>
+													<td th:text="${#dates.format(venta.fecha, 'dd-MMM-yyyy')}"></td>
+												</tr>
+											</tbody>
+
+										</table>
+									
+							</div>
+
+							<div class="card-footer ">
+								<hr>
+								<div class="stats">
+									<!-- <i class="fa fa-calendar"></i> Informaci&oacute;n Actualizada
+									Automáticamente  -->
 								</div>
 							</div>
 						</div>

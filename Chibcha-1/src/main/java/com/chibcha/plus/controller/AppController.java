@@ -25,6 +25,7 @@ import com.chibcha.plus.entity.Empleado;
 import com.chibcha.plus.entity.Empleado_comisiones;
 import com.chibcha.plus.entity.Empleado_soporte;
 import com.chibcha.plus.entity.Usuario;
+import com.chibcha.plus.entity.Ventas_distribuidor;
 import com.chibcha.plus.entity.views.VENTAS_DISTRIBUIDOR_ANUAL;
 import com.chibcha.plus.entity.views.VENTAS_DISTRIBUIDOR_ANUAL_REPOSITORY;
 import com.chibcha.plus.entity.views.VENTAS_DISTRIBUIDOR_MENSUAL;
@@ -37,6 +38,7 @@ import com.chibcha.plus.service.api.ClienteServiceAPI;
 import com.chibcha.plus.service.api.DistribuidorServiceAPI;
 import com.chibcha.plus.service.api.Empleado_comisionesServiceAPI;
 import com.chibcha.plus.service.api.Empleado_soporteServiceAPI;
+import com.chibcha.plus.service.api.Ventas_distribuidorServiceAPI;
 
 @Controller
 public class AppController 
@@ -53,6 +55,9 @@ public class AppController
 	
   	@Autowired
   	private Empleado_comisionesServiceAPI comisionesServiceAPI;
+  	
+  	@Autowired
+  	private Ventas_distribuidorServiceAPI ventasDistribuidorServiceAPI;
 	
 	@Autowired
 	private AuthorityRepository authorityRepository;
@@ -165,6 +170,7 @@ public class AppController
 			return "admin_distribuidores";
 		}
 		
+		System.out.println("Fecha Distribuidor ----> " + distribuidor.getFechaingreso());
 		
 		distribuidorServiceAPI.guardar(distribuidor);
 		model.addAttribute("distribuidor", new Distribuidor());
@@ -467,6 +473,33 @@ public class AppController
 		return "comision_reporte";
 	}
 	
+	@GetMapping({"/comision_ventas_distribuidor"})
+	public String comision_ventas_distribuidor(Model model) 
+	{
+		model.addAttribute("ventaDistribuidor", new Ventas_distribuidor());
+		model.addAttribute("distribuidoresList", distribuidorServiceAPI.listar());
+		model.addAttribute("ventaList", ventasDistribuidorServiceAPI.listar());
+		return "comision_ventas_distribuidor";
+	}
+	
+	@PostMapping({"/crear_venta_distribuidor"})
+	public String crear_venta_distribuidor(Model model, @Valid Ventas_distribuidor ventaDistribuidor, BindingResult result)
+	{
+		if(result.hasErrors())
+		{
+			model.addAttribute("ventaDistribuidor", ventaDistribuidor);
+			model.addAttribute("distribuidoresList", distribuidorServiceAPI.listar());
+			return "comision_ventas_distribuidor";
+		}
+		
+		System.out.println(ventaDistribuidor.getFecha());
+		
+		ventasDistribuidorServiceAPI.guardar(ventaDistribuidor);
+		model.addAttribute("ventaDistribuidor", new Ventas_distribuidor());
+		model.addAttribute("distribuidoresList", distribuidorServiceAPI.listar());
+		
+		return "comision_ventas_distribuidor";
+	}
 	
 	
 	

@@ -32,7 +32,7 @@ public class Distribuidor
 	
 	@NotNull(message="La fecha de ingreso es obligatoria")
 	@Column
-	@DateTimeFormat (pattern="YYYY-MM-dd")
+	@DateTimeFormat (pattern="yyyy-MM-dd")
 	private Date fechaingreso;
 
 	public Long getId() 
