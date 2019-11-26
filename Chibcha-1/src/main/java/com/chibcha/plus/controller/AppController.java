@@ -24,6 +24,8 @@ import com.chibcha.plus.entity.Distribuidor;
 import com.chibcha.plus.entity.Empleado;
 import com.chibcha.plus.entity.Empleado_comisiones;
 import com.chibcha.plus.entity.Empleado_soporte;
+import com.chibcha.plus.entity.Nivel_servicio;
+import com.chibcha.plus.entity.Ticket;
 import com.chibcha.plus.entity.Usuario;
 import com.chibcha.plus.entity.Ventas_distribuidor;
 import com.chibcha.plus.entity.views.VENTAS_DISTRIBUIDOR_ANUAL;
@@ -33,12 +35,17 @@ import com.chibcha.plus.entity.views.VENTAS_DISTRIBUIDOR_MENSUAL_REPOSITORY;
 import com.chibcha.plus.entity.views.VENTAS_DISTRIBUIDOR_SEMESTRAL;
 import com.chibcha.plus.entity.views.VENTAS_DISTRIBUIDOR_SEMESTRAL_REPOSITORY;
 import com.chibcha.plus.repository.AuthorityRepository;
+import com.chibcha.plus.repository.EstadoRepository;
+import com.chibcha.plus.repository.Nivel_servicioRepository;
+import com.chibcha.plus.repository.TicketRepository;
 import com.chibcha.plus.repository.UsuarioRepository;
 import com.chibcha.plus.service.api.ClienteServiceAPI;
 import com.chibcha.plus.service.api.DistribuidorServiceAPI;
 import com.chibcha.plus.service.api.Empleado_comisionesServiceAPI;
 import com.chibcha.plus.service.api.Empleado_soporteServiceAPI;
+import com.chibcha.plus.service.api.TicketServiceAPI;
 import com.chibcha.plus.service.api.Ventas_distribuidorServiceAPI;
+import com.chibcha.plus.service.impl.TicketServiceImpl;
 
 @Controller
 public class AppController 
@@ -58,6 +65,15 @@ public class AppController
   	
   	@Autowired
   	private Ventas_distribuidorServiceAPI ventasDistribuidorServiceAPI;
+  	
+  	@Autowired
+  	private TicketRepository ticketServiceAPI;
+  	
+  	@Autowired
+  	private EstadoRepository estadoRepository;
+  	
+  	@Autowired
+  	private Nivel_servicioRepository nivelServicioRepository;
 	
 	@Autowired
 	private AuthorityRepository authorityRepository;
@@ -116,13 +132,7 @@ public class AppController
 		model.addAttribute("distribuidoresList", distribuidorServiceAPI.listar());
 		return "comision";
 	}
-	
-	@GetMapping({"/soporte"})
-	public String soporte() 
-	{
-		return "soporte";
-	}
-	
+		
 	@GetMapping({"/login"})
 	public String login() 
 	{
@@ -501,7 +511,163 @@ public class AppController
 		return "comision_ventas_distribuidor";
 	}
 	
+	@GetMapping({"/gestion_tickets"})
+	public String gestion_tickets(Model model) 
+	{
+		model.addAttribute("ticket", new Ticket());
+		return "gestion_tickets";
+	}
 	
+	@PostMapping({"/crear_ticket"})
+	public String crear_ticket(Model model, @Valid Ticket ticket, BindingResult result)
+	{
+		if(result.hasErrors())
+		{
+			model.addAttribute("ticket", new Ticket());
+			return "gestion_tickets";
+		}
+		
+		ticketServiceAPI.save(ticket);
+		model.addAttribute("ticket", new Ticket());
+		return "gestion_tickets";
+	}
+	
+	@GetMapping({"/soporte"})
+	public String soporte(Model model) 
+	{
+		model.addAttribute("nivelServicioList", nivelServicioRepository.findAll());
+		model.addAttribute("ticketsList", ticketServiceAPI.listarSinClasificar());
+		return "soporte";
+	}
+	
+	@GetMapping({"/clasificar_ticket/{id}/{idNivelServicio}"})
+	public String clasificar_ticket(Model model, @PathVariable(name="id") Long id, @PathVariable(name="idNivelServicio") Long idNivelServicio) 
+	{
+		Ticket tick = ticketServiceAPI.findById(id).get();
+		tick.setNivelServicio(nivelServicioRepository.findById(idNivelServicio).get());
+		ticketServiceAPI.save(tick);
+		
+		model.addAttribute("nivelServicioList", nivelServicioRepository.findAll());
+		model.addAttribute("ticketsList", ticketServiceAPI.listarSinClasificar());
+		return "soporte";
+	}
+	
+	@GetMapping({"/soporte_ns_urgente"})
+	public String soporte_ns_urgente(Model model) 
+	{
+		model.addAttribute("ticketsSinAtender", ticketServiceAPI.listarUrgenteSinAtender());
+		model.addAttribute("ticketsEnAtencion", ticketServiceAPI.listarUrgenteEnAtencion());
+		model.addAttribute("ticketsAtendido", ticketServiceAPI.listarUrgenteAtendido());
+		return "soporte_ns_urgente";
+	}
+	
+	@GetMapping({"/soporte_ns_urgente_atender/{id}"})
+	public String soporte_ns_urgente_atender(Model model, @PathVariable(name="id") Long id) 
+	{
+		Ticket tick = ticketServiceAPI.findById(id).get();
+		Long num = new Long(2);
+		tick.setEstado(estadoRepository.findById(num).get());
+		ticketServiceAPI.save(tick);
+		
+		
+		model.addAttribute("ticketsSinAtender", ticketServiceAPI.listarUrgenteSinAtender());
+		model.addAttribute("ticketsEnAtencion", ticketServiceAPI.listarUrgenteEnAtencion());
+		model.addAttribute("ticketsAtendido", ticketServiceAPI.listarUrgenteAtendido());
+		return "soporte_ns_urgente";
+	}
+	
+	@GetMapping({"/soporte_ns_urgente_finalizar/{id}"})
+	public String soporte_ns_urgente_finalizar(Model model, @PathVariable(name="id") Long id) 
+	{
+		Ticket tick = ticketServiceAPI.findById(id).get();
+		Long num = new Long(3);
+		tick.setEstado(estadoRepository.findById(num).get());
+		ticketServiceAPI.save(tick);
+		
+		
+		model.addAttribute("ticketsSinAtender", ticketServiceAPI.listarUrgenteSinAtender());
+		model.addAttribute("ticketsEnAtencion", ticketServiceAPI.listarUrgenteEnAtencion());
+		model.addAttribute("ticketsAtendido", ticketServiceAPI.listarUrgenteAtendido());
+		return "soporte_ns_urgente";
+	}
+	
+	@GetMapping({"/soporte_ns_importante"})
+	public String soporte_ns_importante(Model model) 
+	{
+		model.addAttribute("ticketsSinAtender", ticketServiceAPI.listarImportanteSinAtender());
+		model.addAttribute("ticketsEnAtencion", ticketServiceAPI.listarImportanteEnAtencion());
+		model.addAttribute("ticketsAtendido", ticketServiceAPI.listarImportanteAtendido());
+		return "soporte_ns_importante";
+	}
+	
+	@GetMapping({"/soporte_ns_importante_atender/{id}"})
+	public String soporte_ns_importante_atender(Model model, @PathVariable(name="id") Long id) 
+	{
+		Ticket tick = ticketServiceAPI.findById(id).get();
+		Long num = new Long(2);
+		tick.setEstado(estadoRepository.findById(num).get());
+		ticketServiceAPI.save(tick);
+		
+		
+		model.addAttribute("ticketsSinAtender", ticketServiceAPI.listarImportanteSinAtender());
+		model.addAttribute("ticketsEnAtencion", ticketServiceAPI.listarImportanteEnAtencion());
+		model.addAttribute("ticketsAtendido", ticketServiceAPI.listarImportanteAtendido());
+		return "soporte_ns_importante";
+	}
+	
+	@GetMapping({"/soporte_ns_importante_finalizar/{id}"})
+	public String soporte_ns_importante_finalizar(Model model, @PathVariable(name="id") Long id) 
+	{
+		Ticket tick = ticketServiceAPI.findById(id).get();
+		Long num = new Long(3);
+		tick.setEstado(estadoRepository.findById(num).get());
+		ticketServiceAPI.save(tick);
+		
+		
+		model.addAttribute("ticketsSinAtender", ticketServiceAPI.listarImportanteSinAtender());
+		model.addAttribute("ticketsEnAtencion", ticketServiceAPI.listarImportanteEnAtencion());
+		model.addAttribute("ticketsAtendido", ticketServiceAPI.listarImportanteAtendido());
+		return "soporte_ns_importante";
+	}
+	
+	@GetMapping({"/soporte_ns_normal"})
+	public String soporte_ns_normal(Model model) 
+	{
+		model.addAttribute("ticketsSinAtender", ticketServiceAPI.listarNormalSinAtender());
+		model.addAttribute("ticketsEnAtencion", ticketServiceAPI.listarNormalEnAtencion());
+		model.addAttribute("ticketsAtendido", ticketServiceAPI.listarNormalAtendido());
+		return "soporte_ns_normal";
+	}
+	
+	@GetMapping({"/soporte_ns_normal_atender/{id}"})
+	public String soporte_ns_normal_atender(Model model, @PathVariable(name="id") Long id) 
+	{
+		Ticket tick = ticketServiceAPI.findById(id).get();
+		Long num = new Long(2);
+		tick.setEstado(estadoRepository.findById(num).get());
+		ticketServiceAPI.save(tick);
+		
+		
+		model.addAttribute("ticketsSinAtender", ticketServiceAPI.listarNormalSinAtender());
+		model.addAttribute("ticketsEnAtencion", ticketServiceAPI.listarNormalEnAtencion());
+		model.addAttribute("ticketsAtendido", ticketServiceAPI.listarNormalAtendido());
+		return "soporte_ns_normal";
+	}
+	
+	@GetMapping({"/soporte_ns_normal_finalizar/{id}"})
+	public String soporte_ns_normal_finalizar(Model model, @PathVariable(name="id") Long id) 
+	{
+		Ticket tick = ticketServiceAPI.findById(id).get();
+		Long num = new Long(3);
+		tick.setEstado(estadoRepository.findById(num).get());
+		ticketServiceAPI.save(tick);
+		
+		
+		model.addAttribute("ticketsSinAtender", ticketServiceAPI.listarNormalSinAtender());
+		model.addAttribute("ticketsEnAtencion", ticketServiceAPI.listarNormalEnAtencion());
+		model.addAttribute("ticketsAtendido", ticketServiceAPI.listarNormalAtendido());
+		return "soporte_ns_normal";
+	}
 	
 	
 
