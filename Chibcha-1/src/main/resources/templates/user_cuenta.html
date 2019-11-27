@@ -47,11 +47,11 @@
 			</div>
 			<div class="sidebar-wrapper">
 				<ul class="nav">
-					<li class="active"><a th:href="@{/user}"> <i
+					<li><a th:href="@{/user}"> <i
 							class="nc-icon nc-bookmark-2"></i>
 							<p>Dominios</p>
 					</a></li>
-					<li><a th:href="@{/user_cuenta}"> <i
+					<li class="active"><a th:href="@{/user_cuenta}"> <i
 							class="nc-icon nc-badge"></i>
 							<p>Cuenta</p>
 					</a></li>
@@ -134,39 +134,109 @@
 
 				<div class="row">
 					<div class="col-md-12">
-						<div class="card ">
-							<div class="card-header ">
-								<h5 class="card-title">Solicitar Dominio</h5>
+						<div class="card card-user">
+							<div class="card-header">
+								<h5 class="card-title"
+									th:text="${cliente.id != null}?'Modificación':'Registro'"></h5>
 							</div>
-							<div class="card-body ">
-								
-							</div>
+							<div class="card-body">
+								<form th:action="@{/actualizar_cliente}" th:object="${cliente}"
+									method="post">
 
-							<div class="card-footer ">
-								<hr>
-								<div class="stats">
-								<i th:text="'Suscripción: ' + ${cliente.plan.nombre}"></i>
-								</div>
+									<input type="hidden" th:field="${cliente.id}" />
+
+									<div class="row">
+										<div class="col-md-6">
+											<div class="form-group">
+												<b>Datos Cliente</b>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="form-group">
+												<b>Datos Usuario</b>
+											</div>
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="col-md-6">
+											<div class="form-group">
+												<label>Nombre Completo</label> <input type="text"
+													class="form-control" placeholder="Nombre Completo"
+													th:field="${cliente.nombre}"> <small
+													class="form-text text-danger"
+													th:if="${#fields.hasErrors('nombre')}"
+													th:errors="*{nombre}"></small>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="form-group">
+												<label>Nombre de Usuario / Correo</label> <input type="text"
+													class="form-control"
+													placeholder="Nombre de Usuario / Correo"
+													th:field="${cliente.usuario.username}"> <small
+													class="form-text text-danger"
+													th:if="${#fields.hasErrors('usuario.username')}"
+													th:errors="*{usuario.username}"></small>
+											</div>
+										</div>
+									</div>
+
+
+									<div class="row">
+										<div class="col-md-6">
+										<div class="form-group">
+												<label>Suscripci&oacute;n</label> <select
+													class="form-control" th:field="${cliente.plan}" style="height:100%;" >
+													<option th:value="${cliente.plan.id}"
+														th:text="${cliente.plan.nombre}"></option>
+												</select>
+												
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="form-group">
+												<label>Contrase&ntilde;a</label> <input type="text"
+													class="form-control" placeholder="Contraseña"
+													th:field="${cliente.usuario.password}"> <small
+													class="form-text text-danger"
+													th:if="${#fields.hasErrors('usuario.password')}"
+													th:errors="*{usuario.password}"></small>
+											</div>
+										</div>
+
+									</div>
+
+									<div class="row">
+										<div class="col-md-6 "></div>
+										<div class="col-md-6 ">
+											<div class="form-group">
+												<label>¿Desactivar Cuenta?</label> <select
+													class="form-control" th:size="1"
+													th:field="${cliente.usuario.enabled}">
+													<option th:value="true" th:text="Activo"></option>
+													<option th:if="${cliente.id} != null" th:value="false"
+														th:text="Inactivo"></option>
+												</select>
+
+											</div>
+
+										</div>
+
+									</div>
+
+									<div class="row">
+										<div class="col-md-12 pr-1">
+											<input class="btn btn-primary btn-round" type="submit"
+												th:value="Actualizar" />
+										</div>
+									</div>
+
+								</form>
 							</div>
 						</div>
 					</div>
 
-				</div>
-
-				<div class="row">
-					<div class="col-md-12">
-						<div class="card ">
-							<div class="card-header ">
-								<h5 class="card-title">Mis Dominios</h5>
-							</div>
-							<div class="card-body "></div>
-
-							<div class="card-footer ">
-								<hr>
-								<div class="stats"></div>
-							</div>
-						</div>
-					</div>
 
 				</div>
 

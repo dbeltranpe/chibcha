@@ -9,8 +9,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
+//import javax.validation.constraints.Max;
+//import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.validation.constraints.NotEmpty;
@@ -29,16 +29,16 @@ public class Cliente
 	@Column(name="nom_cliente")
 	private String nombre;
 	
-	@NotEmpty(message="Se debe indicar la tarjeta del cliente")
-	@Size(min = 13, max = 18, message="El número de la tarjeta de crédito debe tener entre 13 y 18 caracteres")
-	@Column(name="tarjeta_cliente")
-	private String tarjeta;
+//	@NotEmpty(message="Se debe indicar la tarjeta del cliente")
+//	@Size(min = 13, max = 18, message="El número de la tarjeta de crédito debe tener entre 13 y 18 caracteres")
+	@JoinColumn(name="id_tarjeta",unique=true)
+	@OneToOne(cascade = CascadeType.ALL)
+	private Tarjeta tarjeta;
 
 	@NotNull(message="Se debe indicar la suscripción")
-	@Min(value=1, message="La suscripción debe ser 1,2,3 (Oro, Platino, Plata)")
-	@Max(value=3, message="La suscripción debe ser 1,2,3 (Oro, Platino, Plata)")
-	@Column(name="suscripcion_cliente")
-	private int suscripcion;
+	@JoinColumn(name="id_plan",unique=true)
+	@OneToOne(cascade = CascadeType.ALL)
+	private Plan plan;
 	
 	@Valid
 	@JoinColumn(name="usuario_id",unique=true)
@@ -62,7 +62,7 @@ public class Cliente
 		this.id = id;
 	}
 
-	public String getNombre()
+	public String getNombre() 
 	{
 		return nombre;
 	}
@@ -72,24 +72,24 @@ public class Cliente
 		this.nombre = nombre;
 	}
 
-	public String getTarjeta() 
+	public Tarjeta getTarjeta() 
 	{
 		return tarjeta;
 	}
 
-	public void setTarjeta(String tarjeta) 
+	public void setTarjeta(Tarjeta tarjeta) 
 	{
 		this.tarjeta = tarjeta;
 	}
 
-	public int getSuscripcion() 
+	public Plan getPlan()
 	{
-		return suscripcion;
+		return plan;
 	}
 
-	public void setSuscripcion(int suscripcion)
+	public void setPlan(Plan plan) 
 	{
-		this.suscripcion = suscripcion;
+		this.plan = plan;
 	}
 
 	public Usuario getUsuario() 
@@ -101,6 +101,8 @@ public class Cliente
 	{
 		this.usuario = usuario;
 	}
+
+
 	
 	
 

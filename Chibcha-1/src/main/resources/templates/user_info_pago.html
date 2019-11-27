@@ -13,6 +13,12 @@
 	content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no'
 	name='viewport' />
 
+
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+	rel="stylesheet">
+<link rel="stylesheet" href="static/css/stylePago.css"
+	th:href="@{/css/stylePago.css}">
+
 <!--     Fonts and icons     -->
 <link
 	href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200"
@@ -47,7 +53,7 @@
 			</div>
 			<div class="sidebar-wrapper">
 				<ul class="nav">
-					<li class="active"><a th:href="@{/user}"> <i
+					<li><a th:href="@{/user}"> <i
 							class="nc-icon nc-bookmark-2"></i>
 							<p>Dominios</p>
 					</a></li>
@@ -55,7 +61,7 @@
 							class="nc-icon nc-badge"></i>
 							<p>Cuenta</p>
 					</a></li>
-					<li><a th:href="@{/user_info_pago}"> <i
+					<li class="active"><a th:href="@{/user_info_pago}"> <i
 							class="nc-icon nc-tag-content"></i>
 							<p>Informaci&oacute;n de Pago</p>
 					</a></li>
@@ -133,42 +139,78 @@
 			<div class="content">
 
 				<div class="row">
-					<div class="col-md-12">
-						<div class="card ">
-							<div class="card-header ">
-								<h5 class="card-title">Solicitar Dominio</h5>
+					<div style="background: white; width: 100%; border-radius: 12px;">
+					
+						<div>
+						<div class="card-header " style="background: white;border-radius: 12px;">
+								<h5 class="card-title">Tarjeta de Crédito</h5>
 							</div>
-							<div class="card-body ">
-								
-							</div>
-
-							<div class="card-footer ">
-								<hr>
-								<div class="stats">
-								<i th:text="'Suscripción: ' + ${cliente.plan.nombre}"></i>
+						
+							<br>
+						</div>
+						<div id="container">
+							<div class="col1">
+								<div class="card">
+									<div class="front">
+										<div class="type">
+											<img class="bankid" />
+										</div>
+										<span class="chip"></span> <span class="card_number">&#x25CF;&#x25CF;&#x25CF;&#x25CF;
+											&#x25CF;&#x25CF;&#x25CF;&#x25CF;
+											&#x25CF;&#x25CF;&#x25CF;&#x25CF;
+											&#x25CF;&#x25CF;&#x25CF;&#x25CF; </span>
+										<div class="date">
+											<span class="date_value">MM / YYYY</span>
+										</div>
+										<span class="fullname">NOMBRE</span>
+									</div>
+									<div class="back">
+										<div class="magnetic"></div>
+										<div class="bar"></div>
+										<span class="seccode">&#x25CF;&#x25CF;&#x25CF;</span> <span
+											class="chip"></span><span class="disclaimer">This card
+											is property of Random Bank of Random corporation. <br>
+											If found please return to Random Bank of Random corporation -
+											21968 Paris, Verdi Street, 34
+										</span>
+									</div>
 								</div>
 							</div>
+							<div class="col2">
+							<form th:action="@{/guardar_tarjeta}" th:object="${tarjeta}"
+									method="post">
+								<label>N&uacute;mero Tarjeta</label> <input class="number" type="text"
+									ng-model="ncard" maxlength="19"
+									onkeypress='return event.charCode >= 48 && event.charCode <= 57' th:field="${tarjeta.numTarjeta}" />
+								<label>Nombre del Titular</label> <input class="inputname"
+									type="text" placeholder="" th:field="${tarjeta.titular}"/> <label>Fecha vencimiento</label> <input
+									class="expire" type="text" placeholder="MM / YYYY" th:field="${tarjeta.fechaVencimiento}" /> <label>N&uacute;mero de Seguridad</label> 
+									<input class="ccv" type="text" placeholder="CVC" maxlength="3"
+									onkeypress='return event.charCode >= 48 && event.charCode <= 57' th:field="${tarjeta.numSeguridad}"/>
+								<button type="submit" class="buy">
+									<i class="material-icons">lock</i> Registrar
+								</button>
+							</form>
+							</div>
+						</div>
+						<div>
+							<br>
 						</div>
 					</div>
-
 				</div>
 
-				<div class="row">
-					<div class="col-md-12">
-						<div class="card ">
-							<div class="card-header ">
-								<h5 class="card-title">Mis Dominios</h5>
-							</div>
-							<div class="card-body "></div>
+				<!-- partial -->
+				<script
+					src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.min.js'></script>
+				<script
+					src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
+				<script
+					src='https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js'></script>
+				<script src="static/js/scriptPago.js" th:src="@{/js/scriptPago.js}"></script>
 
-							<div class="card-footer ">
-								<hr>
-								<div class="stats"></div>
-							</div>
-						</div>
-					</div>
 
-				</div>
+
+
 
 			</div>
 
@@ -260,11 +302,6 @@
 												}
 											});
 						});
-
-		function dirigir(id) {
-			window.location.href = "/clasificar_ticket/" + id + "/"
-					+ document.getElementById('nivels').value
-		}
 	</script>
 
 	<div>
