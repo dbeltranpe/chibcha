@@ -139,13 +139,33 @@
 								<h5 class="card-title">Solicitar Dominio</h5>
 							</div>
 							<div class="card-body ">
-								
+
+								<form method="post" th:action="@{/solicitar_dominio}"
+									th:object="${dominio}">
+									<div class="row">
+										<div class="col-md-10">
+											<div class="form-group">
+												<label>Dominio a solicitar</label> <input type="text"
+													class="form-control" placeholder="Ingrese el dominio"
+													th:field="${dominio.nombre}" />
+											</div>
+										</div>
+
+										<div class="col-md-2">
+											<div class="form-group">
+												<label></label> <input class="btn btn-primary btn-round"
+													type="submit" th:value="Solicitar" />
+											</div>
+										</div>
+
+									</div>
+								</form>
 							</div>
 
 							<div class="card-footer ">
 								<hr>
 								<div class="stats">
-								<i th:text="'Suscripción: ' + ${cliente.plan.nombre}"></i>
+									<i th:text="'Suscripción: ' + ${cliente.plan.nombre}"></i>
 								</div>
 							</div>
 						</div>
@@ -159,7 +179,27 @@
 							<div class="card-header ">
 								<h5 class="card-title">Mis Dominios</h5>
 							</div>
-							<div class="card-body "></div>
+							<div class="card-body ">
+
+								<table id="example" class="display" style="text-align: center">
+									<thead>
+										<tr>
+											<td><b>Dominio</b></td>
+											<td><b>Estado</b></td>
+										</tr>
+									</thead>
+
+									<tbody>
+										<tr th:each="dominio: ${dominiosList}">
+											<td th:text=${dominio.nombre}></td>
+											<td >Procesando solicitud</td>
+
+										</tr>
+									</tbody>
+
+								</table>
+
+							</div>
 
 							<div class="card-footer ">
 								<hr>

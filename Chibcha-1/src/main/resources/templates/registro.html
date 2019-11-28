@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Login ChibchaWeb</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->
+<link rel="icon" type="image/png" href="images/icons/favicon.ico" />
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css" href="static/css/utilLogin.css"
+	th:href="@{/css/utilLogin.css}">
+<link rel="stylesheet" type="text/css" href="static/css/mainLogin.css"
+	th:href="@{/css/mainLogin.css}">
+<!--===============================================================================================-->
+<link
+	href="https://fonts.googleapis.com/css?family=Poppins:400,700&display=swap"
+	rel="stylesheet">
+<link rel="stylesheet" href="static/css/bootstrap.min.css"
+	th:href="@{/css/bootstrap.min.css}" />
+<link rel="stylesheet" href="static/css/paper-dashboard.css?v=2.0.0"
+	th:href="@{/css/paper-dashboard.css?v=2.0.0}" />
+
+</head>
+<body>
+
+	<div class="limiter">
+		<div class="container-login100">
+			<div class="wrap-login100">
+				<div class="login100-form-title"
+					style="background-image: url(/img/bg-01.jpg);">
+					<span class="login100-form-title-1"> ChibchaWeb Registro </span>
+				</div>
+				<div>
+					<form th:action="@{/registro_nuevo}" th:object="${cliente}"
+						method="post" style="padding:10px;" >
+
+						<input type="hidden" th:field="${cliente.id}" />
+
+						<div class="row">
+							<div class="col-md-5">
+								<div class="form-group">
+									<b>Datos Cliente</b>
+								</div>
+							</div>
+							<div class="col-md-5">
+								<div class="form-group">
+									<b>Datos Usuario</b>
+								</div>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-md-5">
+								<div class="form-group">
+									<label>Nombre Completo</label> <input type="text"
+										class="form-control" placeholder="Nombre Completo"
+										th:field="${cliente.nombre}"> <small
+										class="form-text text-danger"
+										th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></small>
+								</div>
+							</div>
+							<div class="col-md-5">
+								<div class="form-group">
+									<label>Nombre de Usuario / Correo</label> <input type="text"
+										class="form-control" placeholder="Nombre de Usuario / Correo"
+										th:field="${cliente.usuario.username}"> <small
+										class="form-text text-danger"
+										th:if="${#fields.hasErrors('usuario.username')}"
+										th:errors="*{usuario.username}"></small>
+								</div>
+							</div>
+						</div>
+
+
+						<div class="row">
+							<div class="col-md-5">
+								<div class="form-group">
+									<label>Suscripci&oacute;n</label> <select class="form-control"
+										th:field="${cliente.plan}" style="height: 100%;">
+										<option th:each="plan : ${planes}" th:value="${plan.id}"
+											th:text="${plan.nombre}"></option>
+									</select>
+
+								</div>
+							</div>
+							<div class="col-md-5">
+								<div class="form-group">
+									<label>Contrase&ntilde;a</label> <input type="text"
+										class="form-control" placeholder="Contraseña"
+										th:field="${cliente.usuario.password}"> <small
+										class="form-text text-danger"
+										th:if="${#fields.hasErrors('usuario.password')}"
+										th:errors="*{usuario.password}"></small>
+								</div>
+							</div>
+
+						</div>
+
+						<div class="row">
+							<div class="col-md-5 ">
+
+								<div class="form-group">
+									<label>Estado</label> <select class="form-control" th:size="1"
+										th:field="${cliente.usuario.enabled}">
+										<option th:value="true" th:text="Activo"></option>
+										<option th:if="${cliente.id} != null" th:value="false"
+											th:text="Inactivo"></option>
+									</select>
+
+								</div>
+
+							</div>
+							<div class="col-md-5 ">
+								<div class="form-group">
+									<label>Rol</label> <select class="form-control" th:size="1"
+										th:field="${cliente.usuario.authority}"
+										th:disabled="${disableFields}">
+										<option th:each="rol : ${roles}" th:value="${rol.id}"
+											th:text="${rol.authority}"></option>
+									</select>
+
+								</div>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-md-6 pr-1">
+							<a th:href="@{/login}" class="txt1"> Regresar
+							</a>
+								<input class="btn btn-primary btn-round" type="submit"
+									th:value="'Registrar'" />
+							</div>
+						</div>
+
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+</body>
+</html>

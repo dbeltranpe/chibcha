@@ -23,11 +23,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import com.chibcha.plus.entity.Authority;
 import com.chibcha.plus.entity.Cliente;
 import com.chibcha.plus.entity.Distribuidor;
+import com.chibcha.plus.entity.Dominio;
 import com.chibcha.plus.entity.Empleado;
 import com.chibcha.plus.entity.Empleado_comisiones;
 import com.chibcha.plus.entity.Empleado_soporte;
-import com.chibcha.plus.entity.Nivel_servicio;
-import com.chibcha.plus.entity.Plan;
 import com.chibcha.plus.entity.Tarjeta;
 import com.chibcha.plus.entity.Ticket;
 import com.chibcha.plus.entity.Usuario;
@@ -40,19 +39,17 @@ import com.chibcha.plus.entity.views.VENTAS_DISTRIBUIDOR_SEMESTRAL;
 import com.chibcha.plus.entity.views.VENTAS_DISTRIBUIDOR_SEMESTRAL_REPOSITORY;
 import com.chibcha.plus.repository.AuthorityRepository;
 import com.chibcha.plus.repository.ClienteRepository;
+import com.chibcha.plus.repository.DominioRepository;
 import com.chibcha.plus.repository.EstadoRepository;
 import com.chibcha.plus.repository.Nivel_servicioRepository;
 import com.chibcha.plus.repository.PlanRepository;
-import com.chibcha.plus.repository.TarjetaRepository;
 import com.chibcha.plus.repository.TicketRepository;
 import com.chibcha.plus.repository.UsuarioRepository;
 import com.chibcha.plus.service.api.ClienteServiceAPI;
 import com.chibcha.plus.service.api.DistribuidorServiceAPI;
 import com.chibcha.plus.service.api.Empleado_comisionesServiceAPI;
 import com.chibcha.plus.service.api.Empleado_soporteServiceAPI;
-import com.chibcha.plus.service.api.TicketServiceAPI;
 import com.chibcha.plus.service.api.Ventas_distribuidorServiceAPI;
-import com.chibcha.plus.service.impl.TicketServiceImpl;
 
 @Controller
 public class AppController 
@@ -95,7 +92,7 @@ public class AppController
 	private ClienteRepository clienteRepository;
 	
 	@Autowired
-	private TarjetaRepository tarjetaRepository;
+	private DominioRepository dominioRepository;
 	
 	@Autowired
 	private VENTAS_DISTRIBUIDOR_ANUAL_REPOSITORY ventasAnualRepository;
@@ -118,11 +115,76 @@ public class AppController
 		return "chibcha";
 	}
 	
-	@GetMapping({"/menu"})
-	public String menu() 
+	@GetMapping({"/recuperar_contrasenia"})
+	public String recuperar_contrasenia() 
 	{
-		return "menu";
+		return "recuperarcontrasenia";
 	}
+	
+	@GetMapping({"/registro"})
+	public String registro(Model model) 
+	{
+		Authority userRole = authorityRepository.findByAuthority("ROLE_USER");
+		List<Authority> roles = Arrays.asList(userRole);
+		
+		model.addAttribute("cliente", new Cliente());
+		model.addAttribute("clienteEditar", new Cliente());
+		model.addAttribute("clientesList", clienteServiceAPI.listar());
+		model.addAttribute("roles", roles);
+		model.addAttribute("planes", planRepository.findAll());
+		
+		return "registro";
+	}
+	
+	@PostMapping({"/registro_nuevo"})
+	public String registro_nuevo( Model model, @Valid Cliente cliente, BindingResult result)
+	{
+		if(result.hasErrors())
+		{
+			model.addAttribute("cliente", cliente);
+			model.addAttribute("clientesList", clienteServiceAPI.listar());
+			Authority userRole = authorityRepository.findByAuthority("ROLE_USER");
+			List<Authority> roles = Arrays.asList(userRole);
+			model.addAttribute("roles", roles);
+			model.addAttribute("planes", planRepository.findAll());
+			
+			return "admin_clientes";
+		}
+		
+		Usuario cif = cliente.getUsuario();
+		if(cif.getPassword().length()<9)
+		{
+			String passCif = pass.cifrar(cif.getPassword());
+			cif.setPassword(passCif);
+			cliente.setUsuario(cif);
+		}
+		
+		if(referencia.isEmpty()==false)
+		{
+			Optional<Usuario> appUser =  userRepository.findByUsername(referencia);
+			if(appUser.isPresent()==true)
+			{
+				Usuario usuEdit = cliente.getUsuario();
+				usuEdit.setId(appUser.get().getId());
+				cliente.setUsuario(usuEdit);
+			}
+			
+			referencia = "";
+		}
+		
+	
+		clienteServiceAPI.guardar(cliente);
+		model.addAttribute("cliente", new Cliente());
+		model.addAttribute("clientesList", clienteServiceAPI.listar());
+		
+		Authority userRole = authorityRepository.findByAuthority("ROLE_USER");
+		List<Authority> roles = Arrays.asList(userRole);
+		model.addAttribute("roles", roles);
+		model.addAttribute("planes", planRepository.findAll());
+		
+		return "login";
+	}
+	
 	
 	@GetMapping({"/admin"})
 	public String admin(Model model) 
@@ -141,10 +203,28 @@ public class AppController
 	{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Usuario user = userRepository.findByUsername(auth.getName()).get();
-		System.out.println(user.toString());
 		Cliente cliente = clienteRepository.findByUsuario(user).get();
 		
+		model.addAttribute("dominiosList", dominioRepository.listarPorCliente(cliente.getId()));
 		model.addAttribute("cliente", cliente);
+		model.addAttribute("dominio", new Dominio());
+		
+		return "user";
+	}
+	
+	@PostMapping({"/solicitar_dominio"})
+	public String solicitar_dominio(Model model, Dominio dominio) 
+	{
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Usuario user = userRepository.findByUsername(auth.getName()).get();
+		Cliente cliente = clienteRepository.findByUsuario(user).get();
+		
+		dominio.setCliente(cliente);
+		dominioRepository.save(dominio);
+		
+		model.addAttribute("dominiosList", dominioRepository.listarPorCliente(cliente.getId()));
+		model.addAttribute("cliente", cliente);
+		model.addAttribute("dominio", new Dominio());
 		
 		return "user";
 	}
@@ -636,6 +716,7 @@ public class AppController
 		ventasDistribuidorServiceAPI.guardar(ventaDistribuidor);
 		model.addAttribute("ventaDistribuidor", new Ventas_distribuidor());
 		model.addAttribute("distribuidoresList", distribuidorServiceAPI.listar());
+		model.addAttribute("ventaList", ventasDistribuidorServiceAPI.listar());
 		
 		return "comision_ventas_distribuidor";
 	}
