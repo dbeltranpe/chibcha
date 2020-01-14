@@ -16,7 +16,8 @@ frontend en el lenguaje de programación Java.
 <li>Módulo de Soporte</li>
 <li>Módulo de Comisiones</li>
 </ul>
-
+<br>
+<img src="/ReadmeImages/chibcha.png" /><br>
 
 <hr>
 <br>
@@ -27,6 +28,10 @@ frontend en el lenguaje de programación Java.
   - Gestionar la información de los distribuidores<br>
   - Gestionar la información de los empleados<br>
 
+<br>
+<img src="/ReadmeImages/admin1.png" /><br>
+<br>
+<img src="/ReadmeImages/admin2.png" /><br>
 
 <br>
 <b>Módulo de Comisiones</b>
@@ -36,6 +41,10 @@ frontend en el lenguaje de programación Java.
   - Consultar comisiones de distribuidores<br>
   - Generar reportes de las comisiones<br>
 
+<br>
+<img src="/ReadmeImages/comision1.png" /><br>
+<br>
+<img src="/ReadmeImages/comision2.png" /><br>
 
 <br>
 <b>Módulo de Cliente</b>
@@ -46,6 +55,10 @@ frontend en el lenguaje de programación Java.
   - Reportar una novedad (Ticket)<br>
   - Gestionar su información de pago<br>
 
+<br>
+<img src="/ReadmeImages/cliente1.png" /><br>
+<br>
+<img src="/ReadmeImages/cliente2.png" /><br>
 
 <br>
 <b>Módulo de Soporte</b>
@@ -55,6 +68,10 @@ frontend en el lenguaje de programación Java.
   - Asignar un nivel de servicio a las novedades<br>
   - Atender los Tickets generados por los clientes<br>
 
+<br>
+<img src="/ReadmeImages/soporte1.png" /><br>
+<br>
+<img src="/ReadmeImages/soporte2.png" /><br>
 
 
 
